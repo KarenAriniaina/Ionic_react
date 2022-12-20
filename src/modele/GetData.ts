@@ -1,39 +1,47 @@
-import { defaultMaxListeners } from 'events';
-import { Vehicule } from '../modele/Vehicule';
 import { Assurance } from './Assurance';
+import { Avion } from './Avion';
+import { DateEntretien } from './DateEntretien';
 import { Kilometrage } from './Kilometrage';
-export const Details= async ()=> {
-    const response = await Promise.all([
-        // fetch(dataUrl),
-        fetch("http://localhost:8080/Vehicules/"),
-        fetch("http://localhost:8080/Kilometrages/"),
-        fetch("http://localhost:8080/Assurances/")
-    ]);
-    const vehic=await response[0].json().then(res=>res.data as Vehicule[])
-    const Kilometrages=await response[1].json().then(res=>res.data as Kilometrage[]);
-    const Assurances=await response[2].json().then(res=>res.data as Assurance[]);
-    for (let index = 0; index < vehic.length; index++) {
-        const element = vehic[index];
-        const listeKm:Kilometrage[]=[];
-        for (let i = 0; i < Kilometrages.length; i++) {
-            const Km = Kilometrages[i];
-            if(Km.idVehicule==element.idVehicule) listeKm.push(Km);
-        }
-        vehic[index].listeKilometrage=listeKm;
-        const listeAss:Assurance[]=[];
-        for (let i = 0; i < Assurances.length; i++) {
-            const Km = Assurances[i];
-            if(Km.idVehicule==element.idVehicule) listeAss.push(Km);
-        }
-        vehic[index].listeAssurance=listeAss;
-        vehic[index].indice=index;
-    }
-    const data={
-        vehic,
-        Kilometrages,
-        Assurances
-    };
-    return vehic;
-};
 
-export default Details;
+export const ListeAvion = async () => {
+    const promise = await fetch("http://localhost:8080/Avions/");
+    const avion = await promise.json().then(res => res.data as Avion[]);
+    for (let index = 0; index < avion.length; index++) {
+        const element = avion[index];
+        const promiseAssurance = await fetch("http://localhost:8080/Avion/" + element.idAvion + "/Assurances/",{});
+        const Assurance = await promiseAssurance.json().then(res => res.data as Assurance[]);
+        avion[index].listeAssurance=Assurance;
+    }
+    return avion;
+}
+
+export const DetailsAvion = async (id: string) => {
+    const promise = await fetch("http://localhost:8080/Avion/" + id + "/");
+    const avion = await promise.json().then(res => res.data as Avion[]);
+    const av=avion[0];
+    //kilometrage
+    const promiseKilometrage = await fetch("http://localhost:8080/Avion/" + id + "/Kilometrages/", {
+        headers: {
+            'token': `${localStorage.getItem("token")}`,
+            'idPersonne': `${localStorage.getItem("idPersonne")}`
+        }
+    });
+    const Kilometrage = await promiseKilometrage.json().then(res => res.data as Kilometrage[]);
+    av.listeKilometrage = Kilometrage;
+    //entretien
+    const promiseDateEntretien = await fetch("http://localhost:8080/Avion/" + id + "/DateEntretiens/", {
+        headers: {
+            'token': `${localStorage.getItem("token")}`,
+            'idPersonne': `${localStorage.getItem("idPersonne")}`
+        }
+    });
+    const DateEntretien = await promiseDateEntretien.json().then(res => res.data as DateEntretien[]);
+    av.listeEntretien = DateEntretien;
+    //Assurance
+    const promiseAssurance = await fetch("http://localhost:8080/Avion/" + id + "/Assurances/");
+    const Assurance = await promiseAssurance.json().then(res => res.data as Assurance[]);
+    av.listeAssurance = Assurance;
+    return av;
+}
+
+export default DetailsAvion;
