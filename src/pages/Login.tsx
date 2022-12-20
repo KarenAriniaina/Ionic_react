@@ -21,7 +21,7 @@ export const Login: React.FC = () => {
             form.append("email", email);
             form.append("passwords", password);
             /*statue*/
-            fetch("http://localhost:8080/Personne", {
+            fetch("https://webservice-production.up.railway.app/Personne", {
                 method: 'POST',
                 body: form
             })
@@ -29,7 +29,7 @@ export const Login: React.FC = () => {
                 .then(res => res.status as boolean)
                 .then(res => setStatue(res))
             /*message*/
-            fetch("http://localhost:8080/Personne", {
+            fetch("https://webservice-production.up.railway.app/Personne", {
                 method: 'POST',
                 body: form
             })
@@ -38,7 +38,7 @@ export const Login: React.FC = () => {
                 .then(res => setError(res))
             /* */
             if (statue != false) {
-                fetch("http://localhost:8080/Personne", {
+                fetch("https://webservice-production.up.railway.app/Personne", {
                     method: 'POST',
                     body: form
                 })
