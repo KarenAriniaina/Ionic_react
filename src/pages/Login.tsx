@@ -9,8 +9,8 @@ import { Personne } from "../modele/Personne"
 
 export const Login: React.FC = () => {
     const { control, handleSubmit } = useForm();
-    const [email, setEmail] = useState<string>("");
-    const [password, setpassword] = useState<string>("");
+    const [email, setEmail] = useState<string>("admin@gmail.com");
+    const [password, setpassword] = useState<string>("root");
     const [personne, setPersonne] = useState<Personne>(new Personne("", "", email, "", password));
     const [error, setError] = useState<string>("");
     const [statue, setStatue] = useState<boolean>(false);
@@ -44,19 +44,25 @@ export const Login: React.FC = () => {
                 })
                     .then(res => res.json())
                     .then(res => res.data as Personne[])
-                    .then(res => setPersonne(res[0]))
+                    .then(res => {
+                        setPersonne(res[0])
+                        if(statue==true) {
+                            localStorage.setItem("token",personne.token);
+                            localStorage.setItem("idPersonne",personne.idPersonne);
+                            window.location.assign("/ListeAvion");
+                        }
+                    })
             }
         }
     });
-    if(localStorage.getItem("token")!=null){
+    if(localStorage.getItem("token")!=null && localStorage.getItem("idPersonne")!=null){
         window.location.assign("/ListeAvion");
         return(<p></p>);
     }
     const registerUser = (data: any) => {
-        if(statue==true) {
-            localStorage.setItem("token",personne.token);
-            window.location.assign("/ListeAvion");
-        }
+        console.log(statue);
+        console.log(personne.idPersonne);
+        
     }
     return (
         <IonPage>
