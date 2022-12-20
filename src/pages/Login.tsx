@@ -49,13 +49,13 @@ export const Login: React.FC = () => {
         }
     });
     if(localStorage.getItem("token")!=null){
-        window.location.assign("/ListeVehicule");
+        window.location.assign("/ListeAvion");
         return(<p></p>);
     }
     const registerUser = (data: any) => {
         if(statue==true) {
             localStorage.setItem("token",personne.token);
-            window.location.assign("/ListeVehicule");
+            window.location.assign("/ListeAvion");
         }
     }
     return (

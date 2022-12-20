@@ -1,67 +1,64 @@
 import { IonButton, IonContent, IonInput, IonItem, IonLabel, IonPage, IonSelect, IonSelectOption, IonText } from "@ionic/react";
 import { ChangeEvent, useEffect, useState } from "react";
-import Details from "../modele/GetData";
-import { Vehicule } from "../modele/Vehicule";
+import { ListeAvion } from "../modele/GetData";
 import { Controller, useForm } from 'react-hook-form';
+import { Avion } from "../modele/Avion";
 
 export const Assur: React.FC = () => {
-    const [vehicules, setVehicules] = useState<Vehicule[]>([]);
+    const [avion, setAvions] = useState<Avion[]>([]);
+    const [statue, setStatue] = useState<boolean>(false);
     useEffect(() => {
-        Details.call(vehicules).then(vehic => setVehicules(vehic))
+        ListeAvion.call(avion).then(avi => {
+            setAvions(avi);
+            setStatue(true);
+        });
     }, [])
     const [selectValue, setSelectValue] = useState<number>(1);
     console.log(selectValue);
-    const listevehic: Vehicule[] = [];
-        let now = new Date();
-        console.log("Date="+selectValue);
-        now.setMonth(now.getMonth() + selectValue);
-        vehicules.forEach(element => {
-            if (element.listeAssurance.length != 0) {
-                let fin = new Date(element.listeAssurance[0].dateFin);
-                console.log(fin+",,"+now)
-                console.log(fin>=now)
-                if (fin >= now) {
-                    console.log("vari")
-                    listevehic.push(element);
-                }
+    const listevehic: Avion[] = [];
+    let now = new Date();
+    console.log("Date=" + selectValue);
+    now.setMonth(now.getMonth() + selectValue);
+    avion.forEach(element => {
+        if (element.listeAssurance.length != 0) {
+            let fin = new Date(element.listeAssurance[0].dateFin);
+            console.log(fin + ",," + now)
+            console.log(fin >= now)
+            if (fin >= now) {
+                listevehic.push(element);
             }
-        });
+        }
+    });
 
-    const { control, handleSubmit } = useForm();
-    const registerUser = (data: any) => {
-        //Update();
-        console.log(listevehic)
-        //console.log('creating a new user account with: ', email);
+    var link: string = "/DetailAvion/";
+    if (statue == false) {
+        return (<p>Loading...</p>);
     }
-    var link: string = "/DetailVehicule/";
     return (
         <IonPage>
             <IonContent className="ion-padding">
                 <IonText color="muted">
                     <h2>Assurance</h2>
                 </IonText>
-                <form onSubmit={handleSubmit(registerUser)}>
+                <form>
                     <IonItem>
                         <IonLabel>Expiré en </IonLabel>
-                        <IonSelect placeholder="Make a Selection" onIonChange={(e: any) => { setSelectValue(parseInt(e.target.value)) }}>
+                        <IonSelect placeholder="Make a Selection" onIonChange={(e: any) => { setSelectValue(parseInt(e.target.value)) }} onClick={(e:any)=>{ setStatue(false)}}>
                             <IonSelectOption value="1">1 mois</IonSelectOption>
                             <IonSelectOption value="3">3 mois</IonSelectOption>
                         </IonSelect>
                     </IonItem>
-                    <IonButton expand="block" type="submit" className="ion-margin-top">
-                        Register
-                    </IonButton>
                 </form>
                 {
-                listevehic.map(element =>
-                    <IonItem>
-                        <IonLabel>{element.idVehicule}: {element.nomMarque}</IonLabel>
-                        <IonButton slot="end" href={link.concat(element.indice.toString())}>
-                            Voir detail
-                        </IonButton>
-                    </IonItem>
-                )
-            }
+                    listevehic.map(element =>
+                        <IonItem>
+                            <IonLabel>{element.idAvion}: {element.nom}-nombre de place:{element.nbrPlace}-modele:{element.modele} </IonLabel>
+                            <IonButton slot="end" href={link.concat(element.idAvion)}>
+                                Voir detail
+                            </IonButton>
+                        </IonItem>
+                    )
+                }
             </IonContent>
         </IonPage>
     );
