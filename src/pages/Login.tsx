@@ -9,8 +9,8 @@ import { Personne } from "../modele/Personne"
 
 export const Login: React.FC = () => {
     const { control, handleSubmit } = useForm();
-    const [email, setEmail] = useState<string>("");
-    const [password, setpassword] = useState<string>("");
+    const [email, setEmail] = useState<string>("admin@gmail.com");
+    const [password, setpassword] = useState<string>("root");
     const [personne, setPersonne] = useState<Personne>(new Personne("", "", email, "", password));
     const [error, setError] = useState<string>("");
     const [statue, setStatue] = useState<boolean>(false);
