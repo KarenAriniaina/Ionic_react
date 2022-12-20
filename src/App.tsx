@@ -49,6 +49,9 @@ const App: React.FC = () => (
           <Route exact path="/ListeAvion">
             <Avi />
           </Route>
+          <Route exact path="/">
+            <Avi />
+          </Route>
           <Route exact path="/DetailAvion/:id" >
             <DetailAvion />
           </Route>
