@@ -44,19 +44,21 @@ export const Login: React.FC = () => {
                 })
                     .then(res => res.json())
                     .then(res => res.data as Personne[])
-                    .then(res => setPersonne(res[0]))
+                    .then(res => {
+
+                        setPersonne(res[0]);
+                        localStorage.setItem("token", personne.token);
+                        localStorage.setItem("idPersonne", personne.idPersonne);
+                        window.location.assign("/ListeAvion");
+                    })
             }
         }
     });
-    if(localStorage.getItem("token")!=null){
+    if (localStorage.getItem("token") != null) {
         window.location.assign("/ListeAvion");
-        return(<p></p>);
+        return (<p></p>);
     }
     const registerUser = (data: any) => {
-        if(statue==true) {
-            localStorage.setItem("token",personne.token);
-            window.location.assign("/ListeAvion");
-        }
     }
     return (
         <IonPage>
